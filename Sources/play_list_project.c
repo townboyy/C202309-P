@@ -8,6 +8,9 @@
 #define GENRE_NUM 3 //장르 개수
 #define PERSON_COUNT 5 //이용자 수
 
+
+
+
 char genre[GENRE_NUM][GENRE_NAME] = { "POP", "발라드", "힙합" }; //일단 장르 3개로 제한
 char songs[MAX_SONGS][SONG_LEN] = { "" }; //노래제목을 입력받는 2차원 배열
 int songCount[PERSON_COUNT] = { 0 }; //이용자 5명의 노래 개수 세는 변수
@@ -64,6 +67,18 @@ void recommendSong(char inputGenre[]) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 int main() {
     int choice = 0; //메뉴 입력받을 변수
     int end = 0; //종료 변수
@@ -71,6 +86,11 @@ int main() {
     char ch; //버퍼 제거..?
     int modifyIndex = 0; //수정을 위한 변수
     char inputGenre[GENRE_NAME] = "";//장르이름을 입력받을 변수
+    int genreCount[GENRE_NUM] = { 0 }; // 각 장르의 등장 횟수를 저장하는 배열
+
+    
+
+    
 
     // 각 이용자의 정보 입력
     for (int i = 0; i < PERSON_COUNT; i++) {
@@ -82,7 +102,7 @@ int main() {
     while (1) {
         printf("------------------\n");
         printf("메뉴를 입력해주세요.\n");
-        printf("1. 재생목록에 노래 추가\n2. 노래 삭제\n3. 재생목록\n4. 종료\n5. 노래 수정\n6. 비슷한 노래 둘러보기\n");
+        printf("1. 재생목록에 노래 추가\n2. 노래 삭제\n3. 재생목록\n4. 종료\n5. 노래 수정\n6. 비슷한 노래 둘러보기\n7.가장 인기있는 장르\n");
         printf("현재 노래 수 = %d\n", songCount[0]);  // 여기서는 첫 번째 사람의 노래 수를 표시
 
         printf("------------------\n");
@@ -162,6 +182,27 @@ int main() {
             recommendSong(inputGenre);
             break;
 
+        case 7:
+            for (int i = 0; i < PERSON_COUNT; i++) {
+                for (int j = 0; j < GENRE_NUM; j++) {
+                    if (strcmp(peopleFavoriteGenres[i], genre[j]) == 0) {
+                        genreCount[j]++;
+                    }
+                }
+            }
+
+           
+            int popularIndex = 0;
+            for (int i = 1; i < GENRE_NUM; i++) {
+                if (genreCount[i] > genreCount[popularIndex]) {
+                    popularIndex = i;
+                }
+            }
+
+            // 가장 인기 있는 장르를 출력
+            printf("가장 인기있는 장르: %s\n", genre[popularIndex]);
+
+
         default:
             printf("잘못된 선택입니다. 다시 선택하세요.\n");
         }
@@ -174,7 +215,15 @@ int main() {
             printf("노래가 %d개로 다 찼습니다.\n", songCount[0]);
             break;
         }
-    }
+       
+        
 
+       
+     
+    }
+   
+    
+    
     return 0;
+   
 }
