@@ -51,19 +51,19 @@ void printSongList(int personIndex) {
 void recommendSong(char inputGenre[]) {
     printf("\n'%s'와 비슷한 장르의 노래를 추천합니다:\n", inputGenre);
 
-    
+
 
     for (int i = 0; i < PERSON_COUNT; i++) {
-      
+
         if (strcmp(inputGenre, peopleFavoriteGenres[i]) == 0) {
-           
+
             for (int j = 0; j < songCount[i]; j++) {
                 printf("'%s' 추천 노래 for %s: %s (장르: %s)\n", inputGenre, peopleNames[i], peopleFavoriteSongs[i][j], inputGenre);
             }
         }
     }
 
-   
+
 }
 
 
@@ -88,17 +88,17 @@ int main() {
     char inputGenre[GENRE_NAME] = "";//장르이름을 입력받을 변수
     int genreCount[GENRE_NUM] = { 0 }; // 각 장르의 등장 횟수를 저장하는 배열
 
-    
 
-    
+
+
 
     // 각 이용자의 정보 입력
     for (int i = 0; i < PERSON_COUNT; i++) {
         printf("사용자 %d, 이름을 입력하세요: ", i + 1);
         scanf_s("%s", peopleNames[i], (int)sizeof(peopleNames[i]));
     }
-        printf("음악 플레이리스트 시작!\n");
-    
+    printf("음악 플레이리스트 시작!\n");
+
     while (1) {
         printf("------------------\n");
         printf("메뉴를 입력해주세요.\n");
@@ -191,7 +191,7 @@ int main() {
                 }
             }
 
-           
+
             int popularIndex = 0;
             for (int i = 1; i < GENRE_NUM; i++) {
                 if (genreCount[i] > genreCount[popularIndex]) {
@@ -199,7 +199,7 @@ int main() {
                 }
             }
 
-            // 가장 인기 있는 장르를 출력
+            break;
             printf("가장 인기있는 장르: %s\n", genre[popularIndex]);
 
 
@@ -215,15 +215,15 @@ int main() {
             printf("노래가 %d개로 다 찼습니다.\n", songCount[0]);
             break;
         }
-       
-        
 
-       
-     
+
+
+
+
     }
-   
-    
-    
+
+
+
     return 0;
-   
+
 }
