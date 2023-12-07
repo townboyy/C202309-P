@@ -87,8 +87,9 @@ int main() {
     char inputGenre[GENRE_NAME] = "";//장르이름을 입력받을 변수
     int genreCount[GENRE_NUM] = { 0 }; // 각 장르의 등장 횟수를 저장하는 배열
     int select = 0;
-
-
+    int center_select = 0;
+    int coupon = 0;
+    int coupon_answer = 231630;
 
     // 각 이용자의 정보 입력
     for (int i = 0; i < PERSON_COUNT; i++) {
@@ -205,13 +206,35 @@ int main() {
 
         case 8:
             
-            printf("고객센터에 접속하셨습니다. 도움이 필요하시면 1, 필요 없다면 2를 입력해주세요");
+            printf("고객센터에 접속하셨습니다. 도움이 필요하시면 1, 필요 없다면 2를 입력해주세요 : ");
             scanf_s("%d", &select);
             if (select == 2) {
                 printf("고객센터를 종료합니다");
-                end == 1;
-                
+        }
+            else if (select == 1) {
+                printf("고객센터 메뉴 \n1.해지 신청\n2.쿠폰 등록\n");
+                scanf_s("%d", &center_select);
+                if (center_select == 1) {
+                    printf("이용권을 해지합니다.");
+                }
+                else if (center_select == 2) {
+                    printf("쿠폰을 등록합니다. 쿠폰 번호를 입력해주세요 : \n");
+                    scanf_s("%d", &coupon);
+                    if (coupon == coupon_answer) {
+                        printf("쿠폰이 확인 되었습니다. 한 달 무료 쿠폰이 증정되었습니다.\n");
+                    }
+                    else if (coupon != coupon_answer) {
+                        printf("쿠폰 번호가 틀렸습니다.\n");
+
+                    }
+                    
+
+                }
             }
+            
+            
+            
+            
             break;
 
     
