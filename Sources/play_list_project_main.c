@@ -1,41 +1,39 @@
-//231630 김도형 플레이리스트 프로젝트
+//231630 김도형
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-#define MAX_SONGS 10 //플레이리스트 노래 개수 10개 제한
-#define SONG_LEN 100 //노래 제목 길이 
-#define GENRE_NAME 100 //장르 이름
-#define GENRE_NUM 3 //장르 개수
-#define PERSON_COUNT 5 //이용자 수
+#define MAX_SONGS 10 // 플레이리스트 노래 개수 10개 제한
+#define SONG_LEN 100 // 노래 제목 길이 
+#define GENRE_NAME 100 // 장르 이름
+#define GENRE_NUM 3 // 장르 개수
+#define PERSON_COUNT 5 // 이용자 수
 
+char genre[GENRE_NUM][GENRE_NAME] = { "POP", "발라드", "힙합" }; // 일단 장르 3개로 제한
+char songs[MAX_SONGS][SONG_LEN] = { "" }; // 노래제목을 입력받는 2차원 배열
+int songCount[PERSON_COUNT] = { 0 }; // 이용자 5명의 노래 개수 세는 변수
 
-char genre[GENRE_NUM][GENRE_NAME] = { "POP", "발라드", "힙합" }; //일단 장르 3개로 제한
-char songs[MAX_SONGS][SONG_LEN] = { "" }; //노래제목을 입력받는 2차원 배열
-int songCount[PERSON_COUNT] = { 0 }; //이용자 5명의 노래 개수 세는 변수
+char peopleNames[PERSON_COUNT][50]; // 이용자의 이름을 입력받는 변수
+char peopleFavoriteGenres[PERSON_COUNT][GENRE_NAME]; // 이용자의 선호하는 장르를 입력받는 2차원 배열
+char*** peopleFavoriteSongs; // 사용자의 선호노래를 입력받는 3차원 포인터 배열
 
-char peopleNames[PERSON_COUNT][50]; //이용자의 이름을 입력받는 변수
-char peopleFavoriteGenres[PERSON_COUNT][GENRE_NAME]; //이용자의 선호하는 장르를 입력받는 2차원 배열
-char peopleFavoriteSongs[PERSON_COUNT][MAX_SONGS][SONG_LEN]; //사용자의 선호노래를 입력받는 3차원 배열
-
-
-void addSong(char song[], char songGenre[], int personIndex, int delIndex) {
+void addSong(char* song, char* songGenre, int personIndex, int delIndex) {
     printf("노래를 입력하세요: ");
-    scanf_s("%s", song, (int)sizeof(song));
+    scanf_s("%s", song, SONG_LEN);
 
     for (int i = 0; i < songCount[personIndex]; i++) {
-
         if (strcmp(peopleFavoriteSongs[personIndex][i], song) == 0) {
             printf("이미 재생목록에 있는 노래입니다. 다른 노래를 입력하세요\n");
-            for (int i = delIndex; i < songCount[personIndex]; i++) {
-                strcpy_s(peopleFavoriteSongs[personIndex][i - 1], sizeof(peopleFavoriteSongs[personIndex][i]), peopleFavoriteSongs[personIndex][i]);
+            for (int j = delIndex; j < songCount[personIndex]; j++) {
+                strcpy_s(peopleFavoriteSongs[personIndex][j - 1], SONG_LEN, peopleFavoriteSongs[personIndex][j]);
             }
             songCount[personIndex]--;
         }
     }
-    strcpy_s(peopleFavoriteSongs[personIndex][songCount[personIndex]], sizeof(peopleFavoriteSongs[personIndex][songCount[personIndex]]), song);
+    strcpy_s(peopleFavoriteSongs[personIndex][songCount[personIndex]], SONG_LEN, song);
 
     // 입력한 노래의 장르를 사용자가 선호하는 장르로 저장
-    strcpy_s(peopleFavoriteGenres[personIndex], sizeof(peopleFavoriteGenres[personIndex]), songGenre);
+    strcpy_s(peopleFavoriteGenres[personIndex], GENRE_NAME, songGenre);
 
     printf("'%s' 노래가 '%s' 장르에 추가되었습니다.\n\n", song, songGenre);
 
@@ -45,7 +43,7 @@ void addSong(char song[], char songGenre[], int personIndex, int delIndex) {
 void delSong(int delIndex, int personIndex) {
     printf("%d. %s : 노래를 삭제합니다.\n", delIndex, peopleFavoriteSongs[personIndex][delIndex - 1]);
     for (int i = delIndex; i < songCount[personIndex]; i++) {
-        strcpy_s(peopleFavoriteSongs[personIndex][i - 1], sizeof(peopleFavoriteSongs[personIndex][i]), peopleFavoriteSongs[personIndex][i]);
+        strcpy_s(peopleFavoriteSongs[personIndex][i - 1], SONG_LEN, peopleFavoriteSongs[personIndex][i]);
     }
     songCount[personIndex]--;
 }
@@ -58,33 +56,25 @@ void printSongList(int personIndex) {
     printf("\n");
 }
 
-void recommendSong(char inputGenre[]) {
+void recommendSong(char* inputGenre) {
     printf("\n'%s'와 비슷한 장르의 노래를 추천합니다:\n", inputGenre);
 
-
-
     for (int i = 0; i < PERSON_COUNT; i++) {
-
         if (strcmp(inputGenre, peopleFavoriteGenres[i]) == 0) {
-
             for (int j = 0; j < songCount[i]; j++) {
                 printf("'%s' 추천 노래 for %s: %s (장르: %s)\n", inputGenre, peopleNames[i], peopleFavoriteSongs[i][j], inputGenre);
             }
         }
     }
-
-
 }
 
-
-
 int main() {
-    int choice = 0; //메뉴 입력받을 변수
-    int end = 0; //종료 변수
-    int delIndex = -1; //삭제를 위한 변수
-    char ch; //버퍼 제거..?
-    int modifyIndex = 0; //수정을 위한 변수
-    char inputGenre[GENRE_NAME] = "";//장르이름을 입력받을 변수
+    int choice = 0; // 메뉴 입력받을 변수
+    int end = 0; // 종료 변수
+    int delIndex = -1; // 삭제를 위한 변수
+    char ch; // 버퍼 제거..?
+    int modifyIndex = 0; // 수정을 위한 변수
+    char inputGenre[GENRE_NAME] = ""; // 장르이름을 입력받을 변수
     int genreCount[GENRE_NUM] = { 0 }; // 각 장르의 등장 횟수를 저장하는 배열
     int select = 0;
     int center_select = 0;
@@ -94,20 +84,29 @@ int main() {
     // 각 이용자의 정보 입력
     for (int i = 0; i < PERSON_COUNT; i++) {
         printf("사용자 %d, 이름을 입력하세요: ", i + 1);
-        scanf_s("%s", peopleNames[i], (int)sizeof(peopleNames[i]));
+        scanf_s("%s", peopleNames[i], 50);
     }
+
+    // 3차원 동적 배열 할당
+    peopleFavoriteSongs = (char***)malloc(PERSON_COUNT * sizeof(char**));
+    for (int i = 0; i < PERSON_COUNT; i++) {
+        peopleFavoriteSongs[i] = (char**)malloc(MAX_SONGS * sizeof(char*));
+        for (int j = 0; j < MAX_SONGS; j++) {
+            peopleFavoriteSongs[i][j] = (char*)malloc(SONG_LEN * sizeof(char));
+        }
+    }
+
     printf("음악 플레이리스트 시작!\n");
 
     while (1) {
         printf("------------------\n");
         printf("메뉴를 입력해주세요.\n");
-        printf("1. 재생목록에 노래 추가\n2. 노래 삭제\n3. 재생목록\n4. 종료\n5. 노래 수정\n6. 비슷한 노래 둘러보기\n7.가장 인기있는 장르\n8.고객센터\n");
-
+        printf("1. 재생목록에 노래 추가\n2. 노래 삭제\n3. 재생목록\n4. 종료\n5. 노래 수정\n6. 비슷한 노래 둘러보기\n7. 가장 인기있는 장르\n8. 고객센터\n");
 
         printf("------------------\n");
-        scanf_s("%d", &choice); //실행할 메뉴 입력받음
+        scanf_s("%d", &choice); // 실행할 메뉴 입력받음
 
-        switch (choice) { //입력받는 CHOICE에 따라 하는 일을 조건문을 통해 분류
+        switch (choice) { // 입력받는 CHOICE에 따라 하는 일을 조건문을 통해 분류
         case 1:
             printf("사용자를 선택하세요 (1~5): ");
             int personIndex;
@@ -119,9 +118,8 @@ int main() {
             }
 
             printf("노래의 장르를 입력하세요 (POP, 발라드, 힙합 등): ");
-            scanf_s("%s", inputGenre, (int)sizeof(inputGenre));
+            scanf_s("%s", inputGenre, GENRE_NAME);
             addSong(peopleFavoriteSongs[personIndex - 1][songCount[personIndex - 1] % MAX_SONGS], inputGenre, personIndex - 1, delIndex);
-
             break;
 
         case 2:
@@ -172,13 +170,13 @@ int main() {
             scanf_s("%d", &modifyIndex);
             ch = getchar();
             printf("새롭게 추가할 노래를 입력해주세요: ");
-            scanf_s("%s", peopleFavoriteSongs[personIndex - 1][modifyIndex - 1], (int)sizeof(peopleFavoriteSongs[personIndex - 1][modifyIndex - 1]));
+            scanf_s("%s", peopleFavoriteSongs[personIndex - 1][modifyIndex - 1], SONG_LEN);
             printf("새로운 노래가 추가되었습니다: %d. %s (장르: %s)\n", modifyIndex, peopleFavoriteSongs[personIndex - 1][modifyIndex - 1], genre[modifyIndex - 1]);
             break;
 
         case 6:
             printf("선호하는 장르를 입력하세요 (POP, 발라드, 힙합): ");
-            scanf_s("%s", inputGenre, (int)sizeof(inputGenre));
+            scanf_s("%s", inputGenre, GENRE_NAME);
             recommendSong(inputGenre);
             break;
 
@@ -191,7 +189,6 @@ int main() {
                 }
             }
 
-
             int popularIndex = 0;
             for (int i = 1; i < GENRE_NUM; i++) {
                 if (genreCount[i] > genreCount[popularIndex]) {
@@ -203,14 +200,12 @@ int main() {
             printf("가장 인기있는 장르: %s\n", genre[popularIndex]);
             break;
 
-
         case 8:
-            
             printf("고객센터에 접속하셨습니다. 도움이 필요하시면 1, 필요 없다면 2를 입력해주세요 : ");
             scanf_s("%d", &select);
             if (select == 2) {
                 printf("고객센터를 종료합니다");
-        }
+            }
             else if (select == 1) {
                 printf("고객센터 메뉴 \n1.해지 신청\n2.쿠폰 등록\n");
                 scanf_s("%d", &center_select);
@@ -225,21 +220,10 @@ int main() {
                     }
                     else if (coupon != coupon_answer) {
                         printf("쿠폰 번호가 틀렸습니다.\n");
-
                     }
-                    
-
                 }
             }
-            
-            
-            
-            
             break;
-
-    
-
-
 
         default:
             printf("잘못된 선택입니다. 다시 선택하세요.\n");
@@ -254,7 +238,15 @@ int main() {
             break;
         }
     }
+
+    // 3차원 동적 배열 해제
+    for (int i = 0; i < PERSON_COUNT; i++) {
+        for (int j = 0; j < MAX_SONGS; j++) {
+            free(peopleFavoriteSongs[i][j]);
+        }
+        free(peopleFavoriteSongs[i]);
+    }
+    free(peopleFavoriteSongs);
+
     return 0;
 }
-
-
